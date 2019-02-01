@@ -2,7 +2,9 @@
 
 > Designed to scrape all climbing data from The Mountain Project.
 
-## Site Structure
+## To Do
 
-Base URL: https://www.mountainproject.com/
-
+- Fix selectors:
+  - selectors.route.rating
+  - selectors.route.firstAscent
+- Create all cleaners
