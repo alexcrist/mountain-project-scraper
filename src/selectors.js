@@ -1,6 +1,6 @@
 // Mountain Project CSS selectors for web scraping
 
-module.exports = {
+const selectors = {
 
   // Selectors for scraping the homepage
   home: {
@@ -18,11 +18,13 @@ module.exports = {
 
   // Selectors for scraping a route
   route: {
-    name:'h1',
-    grade:'.mr-2 .rateYDS',
-    ratingInfo:'#route-star-avg span.scoreStars',
-    type:'.description-details tr:nth-child(1) td+ td',
-    fa:'.description-details tr:nth-child(2) td+ td',
-    pageViews:'tr:nth-child(3) .text-nowrap+ td'
+    name: 'h1',
+    grade: '.mr-2 .rateYDS',
+    rating: '#route-star-avg span',
+    type: '.description-details tr:nth-child(1) td+ td',
+    firstAscent: '.description-details tr:nth-child(2) td+ td',
+    pageViews: 'tr:nth-child(3) .text-nowrap+ td'
   }
 };
+
+module.exports = selectors;

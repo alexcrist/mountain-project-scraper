@@ -1,6 +1,6 @@
 // Cleans scraped data from the Mountain Project
 
-module.exports = {
+const cleaners = {
 
   // Cleans area data
   area: {
@@ -63,3 +63,5 @@ function cleanGrade(grade) {
 function cleanFirstAscent(firstAscent) {
   return firstAscent;
 }
+
+module.exports = cleaners;
