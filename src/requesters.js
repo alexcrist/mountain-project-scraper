@@ -6,13 +6,24 @@ const { scrapeHome, scrapeArea, scrapeRoute } = require('./scrapers.js');
 
 const HOME_URI = 'https://www.mountainproject.com';
 
+// Load the given URI into the cheerio HTML parser
+const scrapeRequest = uri => {
+  return request({
+    uri,
+    transform: cheerio.load,
+    headers: { 'Connection': 'keep-alive' }
+  }).catch(error => {
+    console.log('Connection error. Retrying.');
+    console.log(error);
+    return scrapeRequest(uri);
+  });
+};
+
 // Load and then scrape state URIs from the Mountain Project homepage
-function requestAndScrapeHome() {
-  return scrapeRequest(HOME_URI).then(scrapeHome);
-}
+const requestAndScrapeHome = () => scrapeRequest(HOME_URI).then(scrapeHome);
 
 // Load then scrape a list of Mountain Project area or route URIs
-function requestAndScrape(uris) {
+const requestAndScrape = uris => {
   const loadPromises = uris.map(uri => {
     if (uri.includes('/area/')) {
       return scrapeRequest(uri)
@@ -30,19 +41,12 @@ function requestAndScrape(uris) {
 }
 
 // Take an area and return it with all of its scraped children
-function requestAndScrapeAreaChildren(area) {
+const requestAndScrapeAreaChildren = area => {
   return requestAndScrape(area.childUris)
     .then(children => {
       delete area.childUris;
       return { ...area, children };
     });
-}
-
-// Load the given URI into the cheerio HTML parser
-function scrapeRequest(uri) {
-  const transform = cheerio.load;
-  const options = { uri, transform };
-  return request(options);
 }
 
 module.exports = { requestAndScrapeHome, requestAndScrape };

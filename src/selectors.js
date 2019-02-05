@@ -13,7 +13,7 @@ const selectors = {
     elevation: '.description-details tr:nth-child(1) .text-nowrap+ td',
     gps: '.description-details tr:nth-child(2) td+ td',
     pageViews: 'tr:nth-child(3) .text-nowrap+ td',
-    children:  'div.mp-sidebar div.max-height :not(.small) a'
+    childUris:  'div.mp-sidebar div.max-height :not(.small) a'
   },
 
   // Selectors for scraping a route

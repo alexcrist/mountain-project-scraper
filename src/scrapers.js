@@ -1,76 +1,39 @@
 // Scrapes data from the Mountain Project
 
-const selectors = require('./selectors.js');
-const cleaners = require('./cleaners.js');
+const { home, area, route } = require('./selectors.js');
+
+const AREA_TYPE = 'area';
+const ROUTE_TYPE = 'route';
 
 // Scrape top-level state URIs from Mountain Project homepage
-function scrapeHome($) {
-  return $(STATES).map(function() {
-    return $(this).attr('href');
-  }).get();
-}
-
-// Scrape a Mountain Project area
-function scrapeArea($) {
-
-  const select = selectors.area;
-  const clean = cleaners.area;
-
-  const name = scrapeText($, select.name, clean.name);
-  const elevation = scrapeText($, select.elevation, clean.elevation);
-  const gps = scrapeText($, select.gps, clean.gps);
-  const pageViews = scrapeText($, select.pageViews, clean.pageViews);
-  
-  const childUris = $(select.children).map(function() {
-    return $(this).attr('href');
-  }).get();
-
-  const { longitude, latitude } = gps;
-  const { totalPageViews, monthlyPageViews } = pageViews;
-
-  return {
-    name,
-    elevation,
-    longitude,
-    latitude,
-    totalPageViews,
-    monthlyPageViews,
-    childUris
-  };
-}
+const scrapeHome = $ => scrapeLinks($, home.states);
 
 // Scrape a Mountain Project route
-function scrapeRoute($) {
+const scrapeRoute = $ => ({
+  nodeType: ROUTE_TYPE,
+  name: $(route.name).text(),
+  type: $(route.type).text(),
+  grade: $(route.grade).text(),
+  rating: $(route.rating).text(),
+  pageViews: $(route.pageViews).text(),
+  firstAscent: $(route.firstAscent).text()
+});
 
-  const select = selectors.route;
-  const clean = cleaners.route;
+// Scrape a Mountain Project area
+const scrapeArea = $ => ({
+  nodeType: AREA_TYPE,
+  gps: $(area.gps).text(),
+  name: $(area.name).text(),
+  elevation: $(area.elevation).text(),
+  pageViews: $(area.pageViews).text(),
+  childUris: scrapeLinks($, area.childUris)
+});
 
-  const name = scrapeText($, select.name, clean.name);
-  const type = scrapeText($, select.type, clean.type);
-  const grade = scrapeText($, select.grade, clean.grade);
-  const rating = scrapeText($, select.rating, clean.rating);
-  const firstAscent = scrapeText($, select.firstAscent, clean.firstAscent);
-  const pageViews = scrapeText($, select.pageViews, clean.pageViews);
-
-  const { averageRating, numVotes } = rating;
-  const { totalPageViews, monthlyPageViews } = pageViews;
-
-  return {
-    name,
-    type,
-    grade,
-    averageRating,
-    numVotes,
-    firstAscent,
-    totalPageViews,
-    monthlyPageViews
-  };
-}
-
-function scrapeText($, selector, cleaner) {
-  const element = $(selector);
-  const text = element.text().trim();
-  return cleaner ? cleaner(text) : text;
-}
+// Scrape all links using the given selector
+const scrapeLinks = ($, selector) => {
+  return $(selector).map(function() {
+    return $(this).attr('href');
+  }).get();
+};
 
 module.exports = { scrapeHome, scrapeArea, scrapeRoute };
