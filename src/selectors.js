@@ -1,4 +1,4 @@
-// Mountain Project CSS selectors for web scraping
+// CSS selectors extracting data
 
 const selectors = {
 

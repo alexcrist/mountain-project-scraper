@@ -1,23 +1,64 @@
-const { writeFile } = require('fs-extra');
-const { requestAndScrapeHome, requestAndScrape } = require('./requesters.js');
-const clean = require('./clean.js');
+const { readFile, writeFile, pathExistsSync } = require('fs-extra');
+const Scraper = require('./scraper.js');
 
-const OUTPUT_INDENTATION = 2;
+const FILE_NAME = 'data.json';
+const INDENTATION = 2;
+const HOME = 'https://www.mountainproject.com';
 
-// Write the given json data to a file
-const writeDataToFile = (jsonData, fileName) => {
-  const string = JSON.stringify(jsonData, null, OUTPUT_INDENTATION);
-  return writeFile(fileName, string, 'utf8')
-    .then(() => console.log(`Data saved to ${fileName}!`))
+// Logging helper for promise chains
+function promiseLog(message) {
+  return function(value) {
+    console.log(message);
+    return value;
+  }
+}
+
+function writeDataToFile(jsonData) {
+  const string = JSON.stringify(jsonData, null, INDENTATION);
+  return writeFile(FILE_NAME, string, 'utf8')
+    .then(() => console.log(`Data saved to ${FILE_NAME}!`))
     .then(() => jsonData);
-};
+}
 
-const writeDirty = dirtyData => writeDataToFile(dirtyData, 'dirty-data.json');
-const writeClean = cleanData => writeDataToFile(cleanData, 'clean-data.json');
+// Scrape the mountain project using the given cache if available
+function partialScrape(scraper, cache) {
 
-// Entry point
-requestAndScrapeHome()
-  .then(requestAndScrape)
-  .then(writeDirty)
-  .then(clean)
-  .then(writeClean);
+  // Either we have data cached
+  if (cache) {
+    console.log('Using cache in memory...');
+    return scraper.scrapeChildren(cache);
+  }
+
+  // Or the data is cached in a file
+  else if (pathExistsSync(FILE_NAME)) {
+    console.log('Loading cache from file...')
+    return readFile(FILE_NAME)
+      .then(JSON.parse)
+      .then(promiseLog('Cache loaded. Starting scrape...'))
+      .then(scraper.scrapeChildren);
+  }
+
+  // Or we need to start from scratch
+  else {
+    console.log('Starting scrape from homepage...');
+    return scraper.scrape(HOME);
+  }
+}
+
+function completeScrape(scraper, cache) {
+  partialScrape(scraper, cache)
+    .then(data => writeDataToFile(data))
+    .then(data => {
+      if (!scraper.isComplete()) {
+        scraper.reset();
+        completeScrape(scraper, data);
+      } else {
+        console.log('Scrape complete.');
+      }
+    });
+}
+
+const scraper = new Scraper();
+const initialCache = null;
+completeScrape(scraper, initialCache);
+
