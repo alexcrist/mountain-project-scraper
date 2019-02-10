@@ -1,17 +1,7 @@
-const requestPromise = require('request-promise');
-const cheerio = require('cheerio');
 const extract = require('./extract.js');
+const { request } = require('./util.js');
 
 const SCRAPES_BEFORE_CACHING = 10;
-
-// Request the given URI, load content into cheerio parser, handle errors
-function request(uri) {
-  return requestPromise({ uri, transform: cheerio.load })
-    .catch(error => {
-      console.log(`${error.message} Retrying...`);
-      return requestPromise(uri);
-    });
-}
 
 // A Scraper that requests then extracts data from the Mountain Project
 class Scraper {
@@ -20,65 +10,72 @@ class Scraper {
     this.numItemsScraped = 0;
   }
   
+  // Reset the scraping threshold
   reset() {
     this.numItemsScraped = 0;
   }
 
-  isComplete() {
+  // If we exceed the maximum scrapes before caching, we are done scraping
+  isDone() {
     return this.numItemsScraped < SCRAPES_BEFORE_CACHING;
   }
 
-  // Request and scrape many URIs
-  scrapeMany(uris) {
-    const loadPromises = uris.map(uri => this.scrape(uri));
-    return Promise.all(loadPromises);
+  // Take a node and return it with all of its scraped children
+  scrape(node) {
+    const isUrl = typeof node === 'string';
+    const isArray = Array.isArray(node);
+    const isObject = typeof node === 'object';
+    const hasChildUris = isObject && 'childUris' in node;
+    const hasChildren = isObject && 'children' in node;
+
+    if (isUrl) {
+      return this.scrapeUrl(node);
+    } 
+    
+    else if (isArray) {
+      return this.scrapeArray(node);
+    }
+    
+    else if (hasChildUris) {
+      return this.scrapeChildUris(node);
+    } 
+    
+    else if (hasChildren) {
+      return this.scrapeChildren(node);
+    } 
+    
+    // Else, node is a leaf
+    return new Promise(resolve => resolve(node));
   }
 
-  // Request and scrape a single URI
-  scrape(uri) {
+  scrapeUrl(node) {
     this.numItemsScraped++;
-    return request(uri)
-      .then($ => extract($, uri))
-      .then(parent => this.handleChildren(parent));
+    return request(node)
+      .then($ => extract($, node))
+      .then(node => this.scrape(node));
   }
 
-  // If the scraping threshold is reached, cache results, otherwise scrape
-  handleChildren(parent) {
-    const done = this.numItemsScraped > SCRAPES_BEFORE_CACHING;
-    return  done ? parent : this.scrapeChildren(parent);
+  scrapeArray(node) {
+    const promises = node.map(subNode => this.scrape(subNode), this);
+    return Promise.all(promises);
   }
 
-  // Take a parent and return it with all of its scraped children
-  scrapeChildren(parent) {
-    console.log(typeof parent, Array.isArray(parent));
-
-    // Parent is a string (url)
-    if (typeof parent === 'string') {
-      return this.scrape(parent);
+  scrapeChildUris(node) {
+    const maxScrapesExceeded = this.numItemsScraped > SCRAPES_BEFORE_CACHING;
+    if (maxScrapesExceeded) {
+      return node;
     }
 
-    // Parent is an array
-    if (Array.isArray(parent)) {
-      return parent.map(subParent => this.scrapeChildren(subParent));
+    return this.scrape(node.childUris)
+      .then(children => {
+        delete node.childUris;
+        return { ...node, children: children };
+      })
     }
 
-    // Parent has children and they need scraping
-    else if ('childUris' in parent) {
-      return this.scrapeMany(parent.childUris)
-        .then(children => {
-          delete parent.childUris;
-          return { ...parent, children };
-        });
-    }
-
-    // Parent has children and they have been scraped (results were cached)
-    else if ('children' in parent) {
-      const newChildren = this.scrapeChildren(parent.children);
-      return { ...parent, children: newChildren };
-    }
-
-    // Parent has no children
-    return (() => parent)();
+  scrapeChildren(node) {
+    return this.scrape(node.children)
+      .then(children => ({ ...node, children }));
   }
 }
 

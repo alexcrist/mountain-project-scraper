@@ -2,23 +2,24 @@ const { home, area, route } = require('./selectors.js');
 
 // Extract data from a parsed cheerio HTML page
 function extract($, uri) {
+  process.stdout.write('.');
+
+  const isArea = uri.includes('/area/');
+  const isRoute = uri.includes('/route/');
+  const isHome = uri == 'https://www.mountainproject.com';
   
-  // Target is either an area...
-  if (uri.includes('/area/')) {
+  if (isArea) {
     return extractArea($, uri);
   }
   
-  // ...a route...
-  else if (uri.includes('/route/')) {
+  else if (isRoute) {
     return extractRoute($, uri);
   }
 
-  // ...or the homepage...
-  else if (uri == 'https://www.mountainproject.com') {
+  else if (isHome) {
     return extractHome($);
   }
 
-  // ...or something else...?
   throw Error('Neither area, route, nor homepage.', uri);
 }
 
@@ -28,7 +29,6 @@ const extractHome = $ => extractLinks($, home.states);
 // Extract a route
 const extractRoute = ($, uri) => ({
   uri,
-  nodeType: 'route',
   name: $(route.name).text(),
   type: $(route.type).text(),
   grade: $(route.grade).text(),
@@ -40,7 +40,6 @@ const extractRoute = ($, uri) => ({
 // Extract an area
 const extractArea = ($, uri) => ({
   uri,
-  nodeType: 'area',
   gps: $(area.gps).text(),
   name: $(area.name).text(),
   elevation: $(area.elevation).text(),
