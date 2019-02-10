@@ -20,13 +20,12 @@ class Scraper {
     return this.numItemsScraped < SCRAPES_BEFORE_CACHING;
   }
 
-  // Take a node and return it with all of its scraped children
+  // Scrape a node. A node can be a URL, an array, an area, or a route
   scrape(node) {
     const isUrl = typeof node === 'string';
     const isArray = Array.isArray(node);
     const isObject = typeof node === 'object';
-    const haschildUrls = isObject && 'childUrls' in node;
-    const hasChildren = isObject && 'children' in node;
+    const isArea = isObject && 'children' in node;
 
     if (isUrl) {
       return this.scrapeUrl(node);
@@ -36,43 +35,35 @@ class Scraper {
       return this.scrapeArray(node);
     }
     
-    else if (haschildUrls) {
-      return this.scrapeChildUrls(node);
-    } 
-    
-    else if (hasChildren) {
+    else if (isArea) {
       return this.scrapeChildren(node);
     } 
     
-    // Else, node is a leaf
+    // Else, node is a route (leaf node)
     return new Promise(resolve => resolve(node));
   }
 
+  // If we've exceed our maximum scrape limit, return the given URL. Otherwise,
+  // scrape it
   scrapeUrl(node) {
+    const maxScrapesExceeded = this.numItemsScraped > SCRAPES_BEFORE_CACHING;
+    if (maxScrapesExceeded) {
+      return node;
+    }
+
     this.numItemsScraped++;
     return request(node)
       .then($ => extract($, node))
       .then(node => this.scrape(node));
   }
 
+  // Scrape each node in the given array
   scrapeArray(node) {
     const promises = node.map(subNode => this.scrape(subNode), this);
     return Promise.all(promises);
   }
 
-  scrapeChildUrls(node) {
-    const maxScrapesExceeded = this.numItemsScraped > SCRAPES_BEFORE_CACHING;
-    if (maxScrapesExceeded) {
-      return node;
-    }
-
-    return this.scrape(node.childUrls)
-      .then(children => {
-        delete node.childUrls;
-        return { ...node, children: children };
-      })
-    }
-
+  // Return the given area node with each of its children scraped
   scrapeChildren(node) {
     return this.scrape(node.children)
       .then(children => ({ ...node, children }));

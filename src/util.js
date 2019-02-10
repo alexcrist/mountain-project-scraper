@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const requestPromise = require('request-promise');
 const { writeFile } = require('fs-extra');
-const { gray } = require('chalk');
+const { gray, yellow } = require('chalk');
 
 const INDENTATION = 2;
 
@@ -19,7 +19,7 @@ function request(url) {
     })
     .then(resolve)
     .catch(() => {
-      process.stdout.write(gray('-'));
+      process.stdout.write(yellow('-'));
       return request(url);
     });
   });
@@ -30,7 +30,7 @@ function writeDataToFile(jsonData, fileName) {
   console.log(`\nSaving data to ${fileName}...`);
   const string = JSON.stringify(jsonData, null, INDENTATION);
   return writeFile(fileName, string, 'utf8')
-    .then(() => console.log(`\nData saved to ${fileName}!`))
+    .then(() => console.log(`Data saved!`))
     .then(() => jsonData);
 }
 

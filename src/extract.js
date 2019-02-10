@@ -45,7 +45,7 @@ const extractArea = ($, url) => ({
   name: $(area.name).text(),
   elevation: $(area.elevation).text(),
   pageViews: $(area.pageViews).text(),
-  childUrls: extractLinks($, area.childUrls)
+  children: extractLinks($, area.children)
 });
 
 // Extract all links using the given selector

@@ -1,7 +1,3 @@
-// Cleans scraped data from the Mountain Project
-
-// TODO - this functionality is in the works
-
 const clean = data => {
   return data;
 }

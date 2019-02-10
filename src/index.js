@@ -44,17 +44,17 @@ function partialScrape(scraper, cache) {
 // Scrape the mountain project but using the data from the cache object which is
 // a partially scraped tree of all of the data
 function scrapeWithMemoryCache(scraper, cache) {
-  console.log('\nStarting scrape from memory cache...');
+  console.log('Starting scrape from memory cache...');
   return scraper.scrape(cache);
 }
 
 // Scrape the mountain project but using data loaded from a file that is caching
 // a partially scraped tree of all of the data
 function scrapeWithFileCache(scraper) {
-  console.log('\nLoading cache from file...');
+  console.log('Loading cache from file...');
   return readFile(FILE_NAME)
     .then(JSON.parse)
-    .then(promiseLog('\nCache loaded from file. Starting scrape...'))
+    .then(promiseLog('Cache loaded from file. Starting scrape...'))
     .then(data => scraper.scrape(data));
 }
 
@@ -71,7 +71,7 @@ function scrapeFromRoot(scraper) {
 console.log(blue(bold('Initiating scraper...')));
 console.log(gray('Legend: + = URL request success'));
 console.log(gray('        - = URL request fail, retrying...'));
-console.log(gray('        . = Node scraped'));
+console.log(gray('        . = Node scraped\n'));
 
 const scraper = new Scraper();
 const cache = null;
