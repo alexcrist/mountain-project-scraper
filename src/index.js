@@ -1,4 +1,5 @@
 const { readFile, pathExistsSync } = require('fs-extra');
+const { gray, bold, bgGreen, blue } = require('chalk');
 const Scraper = require('./scraper.js');
 const { writeDataToFile, promiseLog } = require('./util.js');
 
@@ -43,14 +44,14 @@ function partialScrape(scraper, cache) {
 // Scrape the mountain project but using the data from the cache object which is
 // a partially scraped tree of all of the data
 function scrapeWithMemoryCache(scraper, cache) {
-  console.log('\nScraping from memory cache...');
+  console.log('\nStarting scrape from memory cache...');
   return scraper.scrape(cache);
 }
 
 // Scrape the mountain project but using data loaded from a file that is caching
 // a partially scraped tree of all of the data
 function scrapeWithFileCache(scraper) {
-  console.log('\nLoading cache from file...')
+  console.log('\nLoading cache from file...');
   return readFile(FILE_NAME)
     .then(JSON.parse)
     .then(promiseLog('\nCache loaded from file. Starting scrape...'))
@@ -67,8 +68,13 @@ function scrapeFromRoot(scraper) {
 
 // Entry point =================================================================
 
+console.log(blue(bold('Initiating scraper...')));
+console.log(gray('Legend: + = URL request success'));
+console.log(gray('        - = URL request fail, retrying...'));
+console.log(gray('        . = Node scraped'));
+
 const scraper = new Scraper();
 const cache = null;
 completeScrape(scraper, cache)
-  .then(() => console.log('\nScrape complete.'))
+  .then(() => console.log(bgGreen('\nScrape complete.')));
 

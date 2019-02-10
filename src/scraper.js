@@ -25,7 +25,7 @@ class Scraper {
     const isUrl = typeof node === 'string';
     const isArray = Array.isArray(node);
     const isObject = typeof node === 'object';
-    const hasChildUris = isObject && 'childUris' in node;
+    const haschildUrls = isObject && 'childUrls' in node;
     const hasChildren = isObject && 'children' in node;
 
     if (isUrl) {
@@ -36,8 +36,8 @@ class Scraper {
       return this.scrapeArray(node);
     }
     
-    else if (hasChildUris) {
-      return this.scrapeChildUris(node);
+    else if (haschildUrls) {
+      return this.scrapeChildUrls(node);
     } 
     
     else if (hasChildren) {
@@ -60,15 +60,15 @@ class Scraper {
     return Promise.all(promises);
   }
 
-  scrapeChildUris(node) {
+  scrapeChildUrls(node) {
     const maxScrapesExceeded = this.numItemsScraped > SCRAPES_BEFORE_CACHING;
     if (maxScrapesExceeded) {
       return node;
     }
 
-    return this.scrape(node.childUris)
+    return this.scrape(node.childUrls)
       .then(children => {
-        delete node.childUris;
+        delete node.childUrls;
         return { ...node, children: children };
       })
     }

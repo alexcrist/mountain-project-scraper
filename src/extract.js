@@ -1,34 +1,35 @@
 const { home, area, route } = require('./selectors.js');
+const { gray } = require('chalk');
 
 // Extract data from a parsed cheerio HTML page
-function extract($, uri) {
-  process.stdout.write('.');
+function extract($, url) {
+  process.stdout.write(gray('.'));
 
-  const isArea = uri.includes('/area/');
-  const isRoute = uri.includes('/route/');
-  const isHome = uri == 'https://www.mountainproject.com';
+  const isArea = url.includes('/area/');
+  const isRoute = url.includes('/route/');
+  const isHome = url == 'https://www.mountainproject.com';
   
   if (isArea) {
-    return extractArea($, uri);
+    return extractArea($, url);
   }
   
   else if (isRoute) {
-    return extractRoute($, uri);
+    return extractRoute($, url);
   }
 
   else if (isHome) {
     return extractHome($);
   }
 
-  throw Error('Neither area, route, nor homepage.', uri);
+  throw Error('Neither area, route, nor homepage.', url);
 }
 
-// Extract top-level state URIs from the homepage
+// Extract top-level state URLs from the homepage
 const extractHome = $ => extractLinks($, home.states);
 
 // Extract a route
-const extractRoute = ($, uri) => ({
-  uri,
+const extractRoute = ($, url) => ({
+  url,
   name: $(route.name).text(),
   type: $(route.type).text(),
   grade: $(route.grade).text(),
@@ -38,13 +39,13 @@ const extractRoute = ($, uri) => ({
 });
 
 // Extract an area
-const extractArea = ($, uri) => ({
-  uri,
+const extractArea = ($, url) => ({
+  url,
   gps: $(area.gps).text(),
   name: $(area.name).text(),
   elevation: $(area.elevation).text(),
   pageViews: $(area.pageViews).text(),
-  childUris: extractLinks($, area.childUris)
+  childUrls: extractLinks($, area.childUrls)
 });
 
 // Extract all links using the given selector

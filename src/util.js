@@ -1,25 +1,26 @@
 const cheerio = require('cheerio');
 const requestPromise = require('request-promise');
 const { writeFile } = require('fs-extra');
+const { gray } = require('chalk');
 
 const INDENTATION = 2;
 
-// Request the given URI, load content into cheerio parser, handle errors
-function request(uri) {
+// Request the given url, load content into cheerio parser, handle errors
+function request(url) {
   return new Promise(resolve => {
     requestPromise({
-      uri,
+      uri: url,
       transform: cheerio.load,
       headers: { 'Connection': 'Keep-Alive' }
     })
     .then(data => {
-      process.stdout.write('+');
+      process.stdout.write(gray('+'));
       return data;
     })
     .then(resolve)
     .catch(() => {
-      process.stdout.write('-');
-      return requestPromise(uri);
+      process.stdout.write(gray('-'));
+      return request(url);
     });
   });
 }
