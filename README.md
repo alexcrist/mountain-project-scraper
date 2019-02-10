@@ -2,22 +2,22 @@
 
 > Scrape area and route data from The Mountain Project
 
-## Requirements
+## 🚲 Running the Scraper
+
+### Requirements
 
 - `npm 3.5.2`
 - `node 8.10.0` 
-
-## Running
 
 ### Install dependencies
 
 - `npm install`
 
-### Initiate scrape
+### Start scraping
 
 - `npm start`
 
-## Structure
+## 🏛️ Site Structure
 
 The Mountain Project is a tree structure with top-level areas (California, etc.)
 being root nodes. Every area is a branch node that has one parent area and
@@ -36,10 +36,10 @@ many child nodes which can either be sub-areas or routes. Routes are leaf nodes.
               └─ Southwest Face (area)
                 └─ Snake Dyke   (route)
 
-## Scraping Strategy
+## 📃 Scraping Strategy
 
 We start off by scraping the top-level area nodes, then we do a breadth-first
-search scraping the tree of data layer by layer. Every 1000 URL scrapes, we save
+search scraping the tree of data layer by layer. Every 200 URL scrapes, we save
 the data to disk and restart the scraper. We keep our already-scraped data in
 memory to avoid loading our progress from disk in between partial-scrapes.
 
@@ -55,12 +55,11 @@ pick up our progress and decide how to continue scraping.
 This is done by traversing our already-scraped data tree and for each node we
 handle four different possible cases.
 
-**The node can be an array** in which case we evaluate whether each contained
-node needs scraping.
+**The node can be an array** in which case we process each node in the array.
 
 **The node can be a URL** in which case we scrape it to produce a either an area
 or a route.
 
-**The node can be an area** in which case we scrape its children.
+**The node can be an area** in which case we process each of its children.
 
 **The node can be a route** in which case no scraping needs to occur.
