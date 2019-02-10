@@ -1,7 +1,7 @@
 const extract = require('./extract.js');
 const { request } = require('./util.js');
 
-const SCRAPES_BEFORE_CACHING = 10;
+const SCRAPES_BEFORE_CACHING = 200;
 
 // A Scraper that requests then extracts data from the Mountain Project
 class Scraper {
