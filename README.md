@@ -1,6 +1,6 @@
 # Mountain Project Scraper
 
-> Scrape area and route data from The Mountain Project
+> Scrapes area and route data from The Mountain Project
 
 ## 🚲 Running the Scraper
 
