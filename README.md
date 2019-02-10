@@ -52,12 +52,12 @@ scrape across multiple sessions.
 When we restart our scraper with some already-scraped data, we need some way to
 pick up our progress and decide how to continue scraping.
 
-This is done by traversing our already-scraped data tree and for each node we
-handle four different possible cases.
+This is done by traversing our already-scraped data tree and processing nodes
+which can be one of four different types:
 
 **The node can be an array** in which case we process each node in the array.
 
-**The node can be a URL** in which case we scrape it to produce a either an area
+**The node can be a URL** in which case we scrape it to produce either an area
 or a route.
 
 **The node can be an area** in which case we process each of its children.
