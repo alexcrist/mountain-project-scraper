@@ -10,9 +10,6 @@ const selectors = {
   // Selectors for scraping an area
   area: {
     name: 'h1',
-    elevation: '.description-details tr:nth-child(1) .text-nowrap+ td',
-    gps: '.description-details tr:nth-child(2) td+ td',
-    pageViews: 'tr:nth-child(3) .text-nowrap+ td',
     children: 'div.mp-sidebar div.max-height :not(.small) a'
   },
 
@@ -20,10 +17,11 @@ const selectors = {
   route: {
     name: 'h1',
     grade: '.mr-2 .rateYDS',
-    rating: '#route-star-avg span',
-    type: '.description-details tr:nth-child(1) td+ td',
-    firstAscent: '.description-details tr:nth-child(2) td+ td',
-    pageViews: 'tr:nth-child(3) .text-nowrap+ td'
+    rating: '#route-star-avg span'
+  },
+
+  general: {
+    descriptionDetails: '.description-details td'
   }
 };
 

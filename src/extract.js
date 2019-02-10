@@ -1,4 +1,4 @@
-const { home, area, route } = require('./selectors.js');
+const { home, area, route, general } = require('./selectors.js');
 const { gray } = require('chalk');
 
 // Extract data from a parsed cheerio HTML page
@@ -25,34 +25,72 @@ function extract($, url) {
 }
 
 // Extract top-level state URLs from the homepage
-const extractHome = $ => extractLinks($, home.states);
+function extractHome($) {
+  return extractLinks($, home.states);
+}
 
 // Extract a route
-const extractRoute = ($, url) => ({
-  url,
-  name: $(route.name).text(),
-  type: $(route.type).text(),
-  grade: $(route.grade).text(),
-  rating: $(route.rating).text(),
-  pageViews: $(route.pageViews).text(),
-  firstAscent: $(route.firstAscent).text()
-});
+function extractRoute($, url) {
+  const descriptionDetails = extractDescriptionDetails($);
+  return {
+    url,
+    name: $(route.name).text(),
+    rating: $(route.rating).text(),
+    grade: $(route.grade).text(),
+    ...descriptionDetails
+  };
+}
 
 // Extract an area
-const extractArea = ($, url) => ({
-  url,
-  gps: $(area.gps).text(),
-  name: $(area.name).text(),
-  elevation: $(area.elevation).text(),
-  pageViews: $(area.pageViews).text(),
-  children: extractLinks($, area.children)
-});
+function extractArea($, url) {
+  const descriptionDetails = extractDescriptionDetails($)
+  return {
+    url,
+    name: $(area.name).text(),
+    children: extractLinks($, area.children),
+    ...descriptionDetails  
+  };
+}
 
 // Extract all links using the given selector
-const extractLinks = ($, selector) => {
+function extractLinks($, selector) {
   return $(selector).map(function() {
     return $(this).attr('href');
   }).get();
-};
+}
+
+// Extract data from the description details table
+function extractDescriptionDetails($) {
+  const keyMap = {
+    'Elevation:': 'elevation',
+    'GPS:': 'gps',
+    'Page Views:': 'pageViews',
+    'Type:': 'type',
+    'FA:': 'firstAscent'
+  };
+
+  let key = '';
+  let descriptionDetails = {};
+
+  $(general.descriptionDetails).map(function(index) {
+    const isKey = index % 2 == 0;
+    const text = $(this).text().trim();
+    
+    if (isKey) {
+      key = text;
+    }
+
+    else {
+      for (const keyText of Object.keys(keyMap)) {
+        if (key.includes(keyText)) {
+          descriptionDetails[keyMap[keyText]] = text;
+          break;
+        }
+      }
+    }
+  });
+
+  return descriptionDetails;
+}
 
 module.exports = extract;

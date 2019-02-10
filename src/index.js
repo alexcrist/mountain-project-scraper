@@ -1,9 +1,11 @@
 const { readFile, pathExistsSync } = require('fs-extra');
 const { gray, bold, bgGreen, blue } = require('chalk');
+const clean = require('./clean.js');
 const Scraper = require('./scraper.js');
 const { writeDataToFile, promiseLog } = require('./util.js');
 
 const FILE_NAME = 'data.json';
+const CLEANED_FILE_NAME = 'clean-data.json';
 const ROOT = 'https://www.mountainproject.com';
 
 // Attempt to completely scrape the mountain project (periodically caches and
@@ -76,5 +78,8 @@ console.log(gray('        . = Node scraped\n'));
 const scraper = new Scraper();
 const cache = null;
 completeScrape(scraper, cache)
-  .then(() => console.log(bgGreen('\nScrape complete.')));
+  .then(promiseLog(bgGreen('Scrape complete.')))
+  .then(clean)
+  .then(promiseLog('Cleaning data...'))
+  .then(data => writeDataToFile(data, CLEANED_FILE_NAME));
 

@@ -42,4 +42,15 @@ function promiseLog(message) {
   }
 }
 
-module.exports = { request, writeDataToFile, promiseLog };
+// Remove empty fields from an object
+function purgeEmptyFields(obj) {
+  Object.keys(obj).forEach(key => {
+    const val = obj[key];
+    if (val === '' || val === undefined || val === null || val === NaN) {
+      delete obj[key];
+    }
+  });
+  return obj;
+}
+
+module.exports = { request, writeDataToFile, promiseLog, purgeEmptyFields };
