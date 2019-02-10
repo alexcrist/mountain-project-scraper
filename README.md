@@ -1,6 +1,6 @@
 # Mountain Project Scraper
 
-> Scrape area and route data from The Mountain Project
+> Scrapes area and route data from the Mountain Project
 
 ## 🚲 Running the Scraper
 
@@ -39,9 +39,10 @@ many child nodes which can either be sub-areas or routes. Routes are leaf nodes.
 ## 📃 Scraping Strategy
 
 We start off by scraping the top-level area nodes, then we do a breadth-first
-search scraping the tree of data layer by layer. Every 200 URL scrapes, we save
-the data to disk and restart the scraper. We keep our already-scraped data in
-memory to avoid loading our progress from disk in between partial-scrapes.
+scrape each area's children in a breadth-first traversal of the data tree.
+Every 200 URL scrapes, we save the data to disk and restart the scraper. We
+keep our already-scraped data in memory to avoid loading our progress from
+disk in between partial-scrapes.
 
 When we start the scraper, if there is scraped data on disk already, we load
 this data and scrape only the unscraped data. This allows us to perform our
