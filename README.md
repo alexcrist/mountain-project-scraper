@@ -7,7 +7,7 @@
 ### Requirements
 
 - `npm 3.5.2`
-- `node 8.10.0` 
+- `node 8.10.0`
 
 ### Install dependencies
 
@@ -39,7 +39,7 @@ many child nodes which can either be sub-areas or routes. Routes are leaf nodes.
 ## 📃 Scraping Strategy
 
 We start off by scraping the top-level area nodes, then we do a depth-first
-scrape each area's children. Every 200 URL scrapes, we save the data to disk and
+scrape each area's children. Every n URL scrapes, we save the data to disk and
 restart the scraper. We keep our already-scraped data in memory to avoid loading
 our progress from disk in between partial-scrapes.
 

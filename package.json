@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Designed to scrape all climbing data from The Mountain Project.",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node --max-old-space-size=4096 src/index.js"
   },
   "repository": {
     "type": "git",
