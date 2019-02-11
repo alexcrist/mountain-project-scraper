@@ -31,17 +31,11 @@ function cleanArea(area) {
 }
 
 function cleanGps(gps) {
-  let lat, long;
-  try {
-    const regex = /(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)/g;
-    const latLongString = gps.match(regex)[0];
-    const latLongArray = latLongString.split(/,\s*/g);
-    lat = latLongArray[0].trim();
-    long = latLongArray[1].trim();
-  }
-  catch (e) {
-    console.error(gps);
-  }
+  const regex = /(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)/g;
+  const latLongString = gps.match(regex)[0];
+  const latLongArray = latLongString.split(/,\s*/g);
+  const lat = latLongArray[0].trim();
+  const long = latLongArray[1].trim();
   
   return { lat, long };
 }
