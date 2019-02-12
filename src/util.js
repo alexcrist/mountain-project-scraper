@@ -20,7 +20,7 @@ function request(url) {
     .then(resolve)
     .catch(() => {
       process.stdout.write(yellow('-'));
-      return request(url);
+      return request(url).then(resolve);
     });
   });
 }
