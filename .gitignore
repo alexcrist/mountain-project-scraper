@@ -63,3 +63,6 @@ typings/
 mountain-project.json
 data.json
 package-lock.json
+
+data\ (copy).json
+clean-data.json
