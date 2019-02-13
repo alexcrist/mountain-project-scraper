@@ -4,7 +4,7 @@ const selectors = {
 
   // Selectors for scraping the homepage
   home: {
-    states: 'strong .float-xs-left'
+    states: '.hidden-lg-up strong a.float-xs-left'
   },
 
   // Selectors for scraping an area

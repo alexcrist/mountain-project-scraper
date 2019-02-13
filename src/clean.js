@@ -19,10 +19,10 @@ function clean(node) {
 
 function cleanArea(area) {
   const url = area.url;
-  const { lat, long } = cleanGps(area.gps);
-  const name = area.name.trim();
-  const elevation = cleanElevation(area.elevation);
-  const { totalViews, monthlyViews } = cleanPageViews(area.pageViews);
+  const { lat, long } = area.gps && cleanGps(area.gps) || {};
+  const name = area.name && area.name.trim();
+  const elevation = area.elevation && cleanElevation(area.elevation);
+  const { totalViews, monthlyViews } = area.pageViews && cleanPageViews(area.pageViews) || {};
   const children = clean(area.children);
 
   return purgeEmptyFields({
@@ -34,8 +34,8 @@ function cleanGps(gps) {
   const regex = /(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)/g;
   const latLongString = gps.match(regex)[0];
   const latLongArray = latLongString.split(/,\s*/g);
-  const lat = latLongArray[0].trim();
-  const long = latLongArray[1].trim();
+  const lat = parseFloat(latLongArray[0].trim());
+  const long = parseFloat(latLongArray[1].trim());
   
   return { lat, long };
 }
@@ -60,12 +60,12 @@ function cleanPageViews(pageViews) {
 
 function cleanRoute(route) {
   const url = route.url;
-  const name = route.name.trim();
-  const { types, height, pitches, lengthGrade } = cleanType(route.type);
-  const grade = cleanGrade(route.grade); 
-  const { avgRating, numRatings } = cleanRating(route.rating);
-  const { totalViews, monthlyViews } = cleanPageViews(route.pageViews);
-  const firstAscent = route.firstAscent.trim();
+  const name = route.name && route.name.trim();
+  const { types, height, pitches, lengthGrade } = route.type && cleanType(route.type) || {};
+  const grade = route.grade && cleanGrade(route.grade); 
+  const { avgRating, numRatings } = route.rating && cleanRating(route.rating) || {};
+  const { totalViews, monthlyViews } = route.pageViews && cleanPageViews(route.pageViews) || {};
+  const firstAscent = route.firstAscent && route.firstAscent.trim();
 
   return purgeEmptyFields({
     url, name, types, height, pitches, lengthGrade, grade, avgRating, numRatings,
@@ -81,13 +81,13 @@ function cleanType(typeInfo) {
   ];
 
   let types = [];
-  let height = NaN;
-  let pitches = NaN;
-  let lengthGrade = '';
+  let height = null;
+  let pitches = null;
+  let lengthGrade = null;
   
   const typeInfoArray = typeInfo.split(/,\s*/g);
   typeInfoArray.forEach(token => {
-    const isType = token in possibleTypes;
+    const isType = possibleTypes.includes(token);
     const isHeight = token.includes('ft');
     const isPitches = token.includes('pitches');
     const isLengthGrade = token.includes('grade');

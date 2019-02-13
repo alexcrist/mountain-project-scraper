@@ -78,7 +78,7 @@ console.log(gray('        . = Node scraped\n'));
 const scraper = new Scraper();
 const cache = null;
 completeScrape(scraper, cache)
-  .then(promiseLog(bgGreen('Scrape complete.')))
+  .then(promiseLog(bgGreen('\nScrape complete.')))
   .then(clean)
   .then(promiseLog('Cleaning data...'))
   .then(data => writeDataToFile(data, CLEANED_FILE_NAME));

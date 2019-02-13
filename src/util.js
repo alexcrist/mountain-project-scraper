@@ -46,7 +46,7 @@ function promiseLog(message) {
 function purgeEmptyFields(obj) {
   Object.keys(obj).forEach(key => {
     const val = obj[key];
-    if (val === '' || val === undefined || val === null || val === NaN) {
+    if (val === '' || val === false || val === undefined || val === null) {
       delete obj[key];
     }
   });
