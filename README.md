@@ -63,3 +63,70 @@ or a route.
 **The node can be an area** in which case we process each of its children.
 
 **The node can be a route** in which case no scraping needs to occur.
+
+### Scraping Iteration Example
+
+**Iteration 1**
+```
+[
+  "https://www.mountainproject.com/area/105833388/yosemite-valley",
+  "https://www.mountainproject.com/area/105720495/joshua-tree-national-park",
+  ...
+]
+```
+
+**Iteration 2** (URL #1 is scraped)
+```
+[
+  {
+    "url": "https://www.mountainproject.com/area/105833388/yosemite-valley",
+    "name": "Yosemite Valley",
+    "elevation": 4000,
+    "long": 37.744,
+    "lat": -119.599,
+    "totalViews": 3126052,
+    "montlyViews": 20269,
+    "children": [
+      "https://www.mountainproject.com/area/105833392/el-capitan",
+      "https://www.mountainproject.com/area/105833395/half-dome",
+      ...
+    ]
+  },
+  "https://www.mountainproject.com/area/105720495/joshua-tree-national-park",
+  ...
+]
+```
+
+**Iteration 3** (Area #1's first child is scraped)
+```
+[
+  {
+    "url": "https://www.mountainproject.com/area/105833388/yosemite-valley",
+    "name": "Yosemite Valley",
+    "elevation": 4000,
+    "lat": 37.744,
+    "long": -119.599,
+    "totalViews": 3126052,
+    "montlyViews": 20269,
+    "children": [
+      {
+        "url": "https://www.mountainproject.com/area/105833392/el-capitan",
+        "name": "El Capitan",
+        "elevation": 7118,
+        "lat": 37.731,
+        "long": -119.636,
+        "totalViews": 750490,
+        "monthlyViews": 4886,
+        "children": [
+          "https://www.mountainproject.com/area/113804909/southwest-face",
+          ...
+        ]
+      },
+      "https://www.mountainproject.com/area/105833395/half-dome",
+      ...
+    ]
+  },
+  "https://www.mountainproject.com/area/105720495/joshua-tree-national-park",
+  ...
+]
+```
