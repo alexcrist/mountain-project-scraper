@@ -9,7 +9,7 @@ const CLEANED_FILE_NAME = 'clean-data.json';
 const ROOT = 'https://www.mountainproject.com';
 
 // Attempt to completely scrape the mountain project (periodically caches and
-// saves data to disk, then restarts scraper with data from memory cache
+// saves data to disk, then restarts scraper with data from memory cache)
 function completeScrape(scraper, cache) {
   return partialScrape(scraper, cache)
     .then(data => writeDataToFile(data, FILE_NAME))
