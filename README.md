@@ -1,4 +1,4 @@
-# ⛰️ Mountain Project Scraper
+# 🏔️ Mountain Project Scraper
 
 > Scrapes area and route data from the Mountain Project
 
