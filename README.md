@@ -23,18 +23,18 @@ The Mountain Project is a tree structure with top-level areas (California, etc.)
 being root nodes. Every area is a branch node that has one parent area and
 many child nodes which can either be sub-areas or routes. Routes are leaf nodes.
 
-    California                  (top-level area)
-    ├── Joshua Tree             (area)
-    │   └─ Barker Dam Area      (area)
-    │      └─ Room to Shroom    (route)
-    └── Yosemite                (area)
-        └─ Yosemite Valley      (area)
-          ├─ El Capitan         (area)
-          │  └─ Southwest Face  (area)
-          │     └─ The Nose     (route)
-          └─ Half Dome          (area)
-             └─ Southwest Face (area)
-                └─ Snake Dyke   (route)
+    California                   (top-level area)
+    ├── Joshua Tree              (area)
+    │   └─ Barker Dam Area       (area)
+    │      └─ Room to Shroom     (route)
+    └── Yosemite                 (area)
+        └─ Yosemite Valley       (area)
+           ├─ El Capitan         (area)
+           │  └─ Southwest Face  (area)
+           │     └─ The Nose     (route)
+           └─ Half Dome          (area)
+              └─ Southwest Face  (area)
+                 └─ Snake Dyke   (route)
 
 ## 📃 Scraping Strategy
 
