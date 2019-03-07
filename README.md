@@ -33,7 +33,7 @@ many child nodes which can either be sub-areas or routes. Routes are leaf nodes.
           │  └─ Southwest Face  (area)
           │     └─ The Nose     (route)
           └─ Half Dome          (area)
-              └─ Southwest Face (area)
+             └─ Southwest Face (area)
                 └─ Snake Dyke   (route)
 
 ## 📃 Scraping Strategy
