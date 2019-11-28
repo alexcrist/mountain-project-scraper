@@ -85,7 +85,7 @@ or a route.
     "long": 37.744,
     "lat": -119.599,
     "totalViews": 3126052,
-    "montlyViews": 20269,
+    "monthlyViews": 20269,
     "children": [
       "https://www.mountainproject.com/area/105833392/el-capitan",
       "https://www.mountainproject.com/area/105833395/half-dome",
@@ -107,7 +107,7 @@ or a route.
     "lat": 37.744,
     "long": -119.599,
     "totalViews": 3126052,
-    "montlyViews": 20269,
+    "monthlyViews": 20269,
     "children": [
       {
         "url": "https://www.mountainproject.com/area/105833392/el-capitan",
